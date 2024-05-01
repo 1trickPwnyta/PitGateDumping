@@ -113,6 +113,14 @@ namespace PitGateDumping
                 toggleAction = delegate ()
                 {
                     autoDump = !autoDump;
+                    if (!autoDump)
+                    {
+                        MapPortal portal = parent as MapPortal;
+                        if (portal.leftToLoad != null)
+                        {
+                            portal.leftToLoad.Clear();
+                        }
+                    }
                 },
                 isActive = (() => autoDump)
             };
