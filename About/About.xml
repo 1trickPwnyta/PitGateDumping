@@ -10,6 +10,9 @@
 Automates the selection of items on the map, such as wastepacks, to dump into the pit gate.
 
 Pit gates have a Dumping tab similar to the Storage tab for stockpiles that lets you choose what kinds of things to dump into the pit gate. Pawns will automatically dump those things in as part of the hauling job.
+
+=== Updates ===
+05/01/2024: Fix bug where the same item is set to be dumped multiple times
 	</description>
 	<url>https://github.com/1trickPwnyta/PitGateDumping</url>
 	<modDependencies>

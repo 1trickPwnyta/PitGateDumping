@@ -40,9 +40,25 @@ namespace PitGateDumping
                     {
                         foreach (Thing thing in portal.Map.listerThings.AllThings.Where(t => IsValidItemToDump(t)))
                         {
-                            TransferableOneWay transferable = new TransferableOneWay();
-                            transferable.things.Add(thing);
-                            portal.AddToTheToLoadList(transferable, 1);
+                            bool shouldAdd = false;
+                            if (portal.leftToLoad == null)
+                            {
+                                shouldAdd = true;
+                            } 
+                            else
+                            {
+                                TransferableOneWay existingTransferable = TransferableUtility.TransferableMatching(thing, portal.leftToLoad, TransferAsOneMode.PodsOrCaravanPacking);
+                                if (existingTransferable == null || !existingTransferable.things.Contains(thing))
+                                {
+                                    shouldAdd = true;
+                                }
+                            }
+                            if (shouldAdd)
+                            {
+                                TransferableOneWay transferable = new TransferableOneWay();
+                                transferable.things.Add(thing);
+                                portal.AddToTheToLoadList(transferable, thing.stackCount);
+                            }
                         }
 
                         if (portal.leftToLoad != null)
