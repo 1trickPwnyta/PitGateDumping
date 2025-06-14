@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+	<PitGateDumping_Dumping>Dumping</PitGateDumping_Dumping>
+	<PitGateDumping_CommandAutoDump>Auto-dump</PitGateDumping_CommandAutoDump>
+	<PitGateDumping_CommandAutoDumpDesc>Designates this pit gate for automatic dumping of selected items in the Dumping tab.</PitGateDumping_CommandAutoDumpDesc>
+</LanguageData>
