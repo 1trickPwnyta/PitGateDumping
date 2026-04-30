@@ -25,7 +25,23 @@ namespace PitGateDumping
 
         private bool IsValidItemToDump(Thing item)
         {
-            return !item.IsForbidden(Faction.OfPlayer) && storageSettings.filter.Allows(item);
+            if (item != null && item.MapHeld == parent.MapHeld)
+            {
+                if (!item.Fogged() && !item.IsForbidden(Faction.OfPlayer) && storageSettings.filter.Allows(item))
+                {
+                    if (!item.MapHeld.reservationManager.IsReserved(item))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        HashSet<Pawn> reserversOut = new HashSet<Pawn>();
+                        item.MapHeld.reservationManager.ReserversOf(item, reserversOut);
+                        return reserversOut.Any(p => p.CurJobDef == JobDefOf.HaulToPortal && ((JobDriver_HaulToPortal)p.jobs.curDriver).MapPortal == parent);
+                    }
+                }
+            }
+            return false;
         }
 
         private void AddAndRemoveItems()
@@ -73,7 +89,8 @@ namespace PitGateDumping
         public override void CompTick()
         {
             base.CompTick();
-            if (Find.TickManager.TicksGame % dumpIntervalTicks == 0) 
+            MapPortal portal = parent as MapPortal;
+            if (Find.TickManager.TicksGame % dumpIntervalTicks == 0 && portal.IsEnterable(out _)) 
             {
                 AddAndRemoveItems();
             }
@@ -83,6 +100,8 @@ namespace PitGateDumping
         {
             base.Initialize(props);
             InitializeStorageSettings();
+            MapPortal portal = parent as MapPortal;
+            portal.notifiedCantLoadMore = true;
         }
 
         public override void PostExposeData()
@@ -93,14 +112,15 @@ namespace PitGateDumping
             {
                 InitializeStorageSettings();
             }
-            Scribe_Values.Look(ref autoDump, "autoDump");
+            Scribe_Values.Look(ref autoDump, "autoDump", true);
         }
 
         public bool StorageTabVisible
         {
             get
             {
-                return true;
+                MapPortal portal = parent as MapPortal;
+                return portal.IsEnterable(out _);
             }
         }
 
@@ -121,25 +141,28 @@ namespace PitGateDumping
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
-            yield return new Command_Toggle
+            MapPortal portal = parent as MapPortal;
+            if (portal.IsEnterable(out _))
             {
-                defaultLabel = "PitGateDumping_CommandAutoDump".Translate(),
-                defaultDesc = "PitGateDumping_CommandAutoDumpDesc".Translate(),
-                icon = ContentFinder<Texture2D>.Get("UI/AutoDump", true),
-                toggleAction = delegate ()
+                yield return new Command_Toggle
                 {
-                    autoDump = !autoDump;
-                    if (!autoDump)
+                    defaultLabel = "PitGateDumping_CommandAutoDump".Translate(),
+                    defaultDesc = "PitGateDumping_CommandAutoDumpDesc".Translate(),
+                    icon = ContentFinder<Texture2D>.Get("UI/AutoDump", true),
+                    toggleAction = delegate ()
                     {
-                        MapPortal portal = parent as MapPortal;
-                        if (portal.leftToLoad != null)
+                        autoDump = !autoDump;
+                        if (!autoDump)
                         {
-                            portal.leftToLoad.Clear();
+                            if (portal.leftToLoad != null)
+                            {
+                                portal.leftToLoad.Clear();
+                            }
                         }
-                    }
-                },
-                isActive = (() => autoDump)
-            };
+                    },
+                    isActive = (() => autoDump)
+                };
+            }
         }
     }
 }

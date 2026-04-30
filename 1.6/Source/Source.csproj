@@ -54,11 +54,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Debug.cs" />
+    <Compile Include="PatchOperationAddSilentFail.cs" />
     <Compile Include="PitGateDumpingMod.cs" />
     <Compile Include="CompPitGateStorage.cs" />
     <Compile Include="CompProperties_PitGateStorage.cs" />
     <Compile Include="ITab_PitGateStorage.cs" />
-    <Compile Include="Patch_ITab_Storage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

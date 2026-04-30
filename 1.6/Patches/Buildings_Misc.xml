@@ -1,36 +1,82 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Patch>
-  <Operation Class="PatchOperationAdd">
-    <xpath>/Defs/ThingDef[defName="PitGate"]/inspectorTabs</xpath>
-    <value>
-      <li>ITab_PitGateStorage</li>
-    </value>
-  </Operation>
-  <Operation Class="PatchOperationAdd">
-    <xpath>/Defs/ThingDef[defName="PitGate"]/comps</xpath>
-    <value>
-      <li Class="CompProperties_PitGateStorage" />
-    </value>
-  </Operation>
-  <Operation Class="PatchOperationAdd">
-    <xpath>/Defs/ThingDef[defName="PitGate"]/building</xpath>
-    <value>
-      <fixedStorageSettings>
-        <filter>
-          <disallowNotEverStorable>true</disallowNotEverStorable>
-		  <categories>
-            <li>Root</li>
-          </categories>
-        </filter>
-      </fixedStorageSettings>
-    </value>
-  </Operation>
-  <Operation Class="PatchOperationAdd">
-    <xpath>/Defs/ThingDef[defName="PitGate"]/building</xpath>
-    <value>
-      <defaultStorageSettings>
-        <filter />
-      </defaultStorageSettings>
-    </value>
+  <Operation Class="PatchOperationSequence">
+    <operations>
+	  <li Class="PitGateDumping.PatchOperationAddSilentFail">
+	    <xpath>/Defs/ThingDef[portal]|/Defs/ThingDef[thingClass="PocketMapExit"]</xpath>
+	    <value>
+		  <tickerType>Normal</tickerType>
+	    </value>
+	  </li>
+	  <li Class="PatchOperationConditional">
+	    <xpath>/Defs/ThingDef[portal]/tickerType[text()="Never"]</xpath>
+	    <match Class="PatchOperationReplace">
+	      <xpath>/Defs/ThingDef[portal]/tickerType[text()="Never"]</xpath>
+	      <value>
+		    <tickerType>Normal</tickerType>
+	      </value>
+	    </match>
+	  </li>
+	  <li Class="PatchOperationConditional">
+	    <xpath>/Defs/ThingDef[thingClass="PocketMapExit"]/tickerType[text()="Never"]</xpath>
+	    <match Class="PatchOperationReplace">
+	      <xpath>/Defs/ThingDef[thingClass="PocketMapExit"]/tickerType[text()="Never"]</xpath>
+	      <value>
+		    <tickerType>Normal</tickerType>
+	      </value>
+	    </match>
+	  </li>
+	  <li Class="PitGateDumping.PatchOperationAddSilentFail">
+	    <xpath>/Defs/ThingDef[portal]|/Defs/ThingDef[thingClass="PocketMapExit"]</xpath>
+	    <value>
+		  <inspectorTabs />
+	    </value>
+	  </li>
+	  <li Class="PatchOperationAdd">
+		<xpath>/Defs/ThingDef[portal]/inspectorTabs|/Defs/ThingDef[thingClass="PocketMapExit"]/inspectorTabs</xpath>
+		<value>
+		  <li>ITab_PitGateStorage</li>
+		</value>
+	  </li>
+	  <li Class="PitGateDumping.PatchOperationAddSilentFail">
+	    <xpath>/Defs/ThingDef[portal]|/Defs/ThingDef[thingClass="PocketMapExit"]</xpath>
+	    <value>
+		  <comps />
+	    </value>
+	  </li>
+	  <li Class="PatchOperationAdd">
+		<xpath>/Defs/ThingDef[portal]/comps|/Defs/ThingDef[thingClass="PocketMapExit"]/comps</xpath>
+		<value>
+		  <li Class="CompProperties_PitGateStorage" />
+		</value>
+	  </li>
+	  <li Class="PitGateDumping.PatchOperationAddSilentFail">
+	    <xpath>/Defs/ThingDef[portal]|/Defs/ThingDef[thingClass="PocketMapExit"]</xpath>
+	    <value>
+		  <building />
+	    </value>
+	  </li>
+	  <li Class="PatchOperationAdd">
+		<xpath>/Defs/ThingDef[portal]/building|/Defs/ThingDef[thingClass="PocketMapExit"]/building</xpath>
+		<value>
+		  <fixedStorageSettings>
+			<filter>
+			  <disallowNotEverStorable>true</disallowNotEverStorable>
+			  <categories>
+				<li>Root</li>
+			  </categories>
+			</filter>
+		  </fixedStorageSettings>
+		</value>
+	  </li>
+	  <li Class="PatchOperationAdd">
+		<xpath>/Defs/ThingDef[portal]/building|/Defs/ThingDef[thingClass="PocketMapExit"]/building</xpath>
+		<value>
+		  <defaultStorageSettings>
+			<filter />
+		  </defaultStorageSettings>
+		</value>
+	  </li>
+	</operations>
   </Operation>
 </Patch>
